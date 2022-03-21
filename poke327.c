@@ -1549,8 +1549,8 @@ int main(int argc, char *argv[])
 
   init_world();
   print_hiker_dist();
-  
-  /*
+
+
   do {
     print_map();  
     printf("Current position is %d%cx%d%c (%d,%d).  "
@@ -1609,7 +1609,7 @@ int main(int argc, char *argv[])
     }
   } while (c != 'q');
 
-  */
+  
 
   game_loop();
   
