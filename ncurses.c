@@ -1,16 +1,13 @@
-//testing some ncurses stuff
 
 #include <ncurses.h>
 
-int main(int argc, char *argv[]){
+int main()
+{	
+	initscr();			/* Start curses mode 		  */
+	printw("Hello World !!!");	/* Print Hello World		  */
+	refresh();			/* Print it on to the real screen */
+	getch();			/* Wait for user input */
+	endwin();			/* End curses mode		  */
 
-    initscr();
-
-    raw();
-
-    noecho();
-
-    
-
-    return 1;
+	return 0;
 }
