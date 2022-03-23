@@ -45,10 +45,10 @@ typedef int16_t pair_t[num_dims];
 #define MIN_TRAINERS 7
 #define ADD_TRAINER_PROB 50
 
-#define mappair(pair) (m->map[pair[dim_y]][pair[dim_x]])
-#define mapxy(x, y) (m->map[y][x])
-#define heightpair(pair) (m->height[pair[dim_y]][pair[dim_x]])
-#define heightxy(x, y) (m->height[y][x])
+#define mappair(pair) (m->map[(pair)[dim_y]][(pair)[dim_x]])
+#define mapxy(x, y) (m->map[(y)][(x)])
+#define heightpair(pair) (m->height[(pair)[dim_y]][(pair)[dim_x]])
+#define heightxy(x, y) (m->height[(y)][(x)])
 
 typedef enum __attribute__((__packed__)) terrain_type
 {
@@ -1083,7 +1083,7 @@ void new_hiker()
   c->next_turn = 0;
   heap_insert(&world.cur_map->turn, c);
 
-  printf("Hiker at %d,%d\n", pos[dim_x], pos[dim_y]);
+  // printf("Hiker at %d,%d\n", pos[dim_x], pos[dim_y]);
 }
 
 void new_rival()
@@ -1604,6 +1604,7 @@ static void print_map()
     {
       if (world.cur_map->cmap[y][x])
       {
+
         mvaddch(y + 1, x, world.cur_map->cmap[y][x]->symbol);
       }
       else
@@ -1721,13 +1722,15 @@ void validate_next(pair_t *next, pair_t *current, map_t *m)
 {
   if (mappair(*next) == ter_boulder || mappair(*next) == ter_mountain || mappair(*next) == ter_tree || mappair(*next) == ter_forest)
   {
-    printw("You cannot move that direction");
+    mvprintw(0, 0, "You cannot move that direction");
     *next[dim_x] = *current[dim_x];
     *next[dim_y] = *current[dim_y];
   }
+  else
+    mvprintw(0, 0, "valid movement");
 }
 
-void pc_movement(map_t *m)
+int pc_movement(map_t *m)
 {
 
   pair_t next;
@@ -1742,21 +1745,21 @@ void pc_movement(map_t *m)
   case '7':
   case 'y':
     next[dim_x]--;
-    next[dim_y]++;
+    next[dim_y]--;
     validate_next(&next, &world.pc.pos, m);
     break;
 
   // 8 || k
   case '8':
   case 'k':
-    next[dim_y]++;
+    next[dim_y]--;
     validate_next(&next, &world.pc.pos, m);
     break;
 
   // 9 || u
   case '9':
     next[dim_x]++;
-    next[dim_y]++;
+    next[dim_y]--;
     validate_next(&next, &world.pc.pos, m);
     break;
 
@@ -1769,19 +1772,19 @@ void pc_movement(map_t *m)
   // 3 || n
   case '3':
     next[dim_x]++;
-    next[dim_y]--;
+    next[dim_y]++;
     validate_next(&next, &world.pc.pos, m);
     break;
 
   // 2 || j
   case '2':
-    next[dim_x]--;
+    next[dim_y]++;
     validate_next(&next, &world.pc.pos, m);
     break;
 
   case '1':
     next[dim_x]--;
-    next[dim_y]--;
+    next[dim_y]++;
     validate_next(&next, &world.pc.pos, m);
     break;
 
@@ -1791,7 +1794,7 @@ void pc_movement(map_t *m)
     break;
 
   case 'q':
-    return;
+    return 0;
 
   // default throws a THAT'S NOT VALID msg
   default:
@@ -1801,13 +1804,13 @@ void pc_movement(map_t *m)
 
   world.cur_map->cmap[world.pc.pos[dim_y]][world.pc.pos[dim_x]] = NULL;
 
-  // world.pc.pos[dim_x] = next[dim_x];
-  // world.pc.pos[dim_y] = next[dim_y];
+  world.pc.pos[dim_x] = next[dim_x];
+  world.pc.pos[dim_y] = next[dim_y];
 
   world.cur_map->cmap[next[dim_y]][next[dim_x]] = &world.pc;
   // print updated map
   refresh();
-  input = getch();
+  return 1;
 }
 
 void game_loop()
@@ -1815,14 +1818,16 @@ void game_loop()
   character_t *c;
   pair_t d;
 
-  while (1)
+  int loop = 1;
+
+  while (loop)
   {
     c = heap_remove_min(&world.cur_map->turn);
     if (c == &world.pc)
     {
 
       print_map();
-      pc_movement(world.cur_map);
+      loop = pc_movement(world.cur_map);
       c->next_turn += move_cost[char_pc][world.cur_map->map[c->pos[dim_y]]
                                                            [c->pos[dim_x]]];
     }
@@ -1863,6 +1868,7 @@ int main(int argc, char *argv[])
   initscr();
   raw();
   noecho();
+  start_color();
 
   init_world();
   /*

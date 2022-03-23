@@ -523,29 +523,53 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
-main.o: main.cpp.o
-.PHONY : main.o
+heap.o: heap.c.o
+.PHONY : heap.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.o
-.PHONY : main.cpp.o
+heap.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/heap.c.o
+.PHONY : heap.c.o
 
-main.i: main.cpp.i
-.PHONY : main.i
+heap.i: heap.c.i
+.PHONY : heap.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.i
-.PHONY : main.cpp.i
+heap.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/heap.c.i
+.PHONY : heap.c.i
 
-main.s: main.cpp.s
-.PHONY : main.s
+heap.s: heap.c.s
+.PHONY : heap.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.s
-.PHONY : main.cpp.s
+heap.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/heap.c.s
+.PHONY : heap.c.s
+
+poke327.o: poke327.c.o
+.PHONY : poke327.o
+
+# target to build an object file
+poke327.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/poke327.c.o
+.PHONY : poke327.c.o
+
+poke327.i: poke327.c.i
+.PHONY : poke327.i
+
+# target to preprocess a source file
+poke327.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/poke327.c.i
+.PHONY : poke327.c.i
+
+poke327.s: poke327.c.s
+.PHONY : poke327.s
+
+# target to generate assembly for a file
+poke327.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/poke327.c.s
+.PHONY : poke327.c.s
 
 # Help Target
 help:
@@ -587,9 +611,12 @@ help:
 	@echo "... NightlyTest"
 	@echo "... NightlyUpdate"
 	@echo "... main"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... heap.o"
+	@echo "... heap.i"
+	@echo "... heap.s"
+	@echo "... poke327.o"
+	@echo "... poke327.i"
+	@echo "... poke327.s"
 .PHONY : help
 
 

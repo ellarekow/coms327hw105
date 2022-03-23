@@ -1,1 +1,1 @@
-/usr/bin/g++ -g -rdynamic CMakeFiles/main.dir/main.cpp.o -o main 
+/usr/bin/gcc -g CMakeFiles/main.dir/heap.c.o CMakeFiles/main.dir/poke327.c.o -o main  -lncurses -ltinfo 

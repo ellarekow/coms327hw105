@@ -8,7 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/ellarekow/Documents/COMS327/coms327hw105/main.cpp" "CMakeFiles/main.dir/main.cpp.o" "gcc" "CMakeFiles/main.dir/main.cpp.o.d"
+  "/home/ellarekow/Documents/COMS327/coms327hw105/heap.c" "CMakeFiles/main.dir/heap.c.o" "gcc" "CMakeFiles/main.dir/heap.c.o.d"
+  "/home/ellarekow/Documents/COMS327/coms327hw105/poke327.c" "CMakeFiles/main.dir/poke327.c.o" "gcc" "CMakeFiles/main.dir/poke327.c.o.d"
   )
 
 # Targets to which this target links.
