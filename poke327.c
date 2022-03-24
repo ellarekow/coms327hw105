@@ -161,6 +161,23 @@ static pair_t all_dirs[8] = {
     dir[1] = all_dirs[_i][1]; \
   }
 
+void battle()
+{
+  clear();
+  int inBattle = 1;
+  int input = 0;
+  while (inBattle)
+  {
+    mvprintw(0, 0, "BATTLE!!! *intense pokemon music*");
+    input = getch();
+    if (input == 27)
+    {
+      clear();
+      inBattle = 0;
+    }
+  }
+}
+
 static void move_hiker_func(character_t *c, pair_t dest)
 {
   int min;
@@ -183,7 +200,11 @@ static void move_hiker_func(character_t *c, pair_t dest)
     {
       dest[dim_x] = c->pos[dim_x] + all_dirs[i & 0x7][dim_x];
       dest[dim_y] = c->pos[dim_y] + all_dirs[i & 0x7][dim_y];
-      min = world.hiker_dist[dest[dim_y]][dest[dim_x]];
+
+      if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+        battle();
+      else
+        min = world.hiker_dist[dest[dim_y]][dest[dim_x]];
     }
   }
 }
@@ -210,7 +231,10 @@ static void move_rival_func(character_t *c, pair_t dest)
     {
       dest[dim_x] = c->pos[dim_x] + all_dirs[i & 0x7][dim_x];
       dest[dim_y] = c->pos[dim_y] + all_dirs[i & 0x7][dim_y];
-      min = world.rival_dist[dest[dim_y]][dest[dim_x]];
+      if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+        battle();
+      else
+        min = world.hiker_dist[dest[dim_y]][dest[dim_x]];
     }
   }
 }
@@ -239,6 +263,8 @@ static void move_pacer_func(character_t *c, pair_t dest)
     dest[dim_x] = c->pos[dim_x] + c->npc->dir[dim_x];
     dest[dim_y] = c->pos[dim_y] + c->npc->dir[dim_y];
   }
+  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+    battle();
 }
 
 static void move_wanderer_func(character_t *c, pair_t dest)
@@ -264,12 +290,18 @@ static void move_wanderer_func(character_t *c, pair_t dest)
     dest[dim_x] = c->pos[dim_x] + c->npc->dir[dim_x];
     dest[dim_y] = c->pos[dim_y] + c->npc->dir[dim_y];
   }
+
+  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+    battle();
 }
 
 static void move_sentry_func(character_t *c, pair_t dest)
 {
   dest[dim_x] = c->pos[dim_x];
   dest[dim_y] = c->pos[dim_y];
+
+  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+    battle();
 }
 
 static void move_walker_func(character_t *c, pair_t dest)
@@ -300,6 +332,9 @@ static void move_walker_func(character_t *c, pair_t dest)
     dest[dim_x] = c->pos[dim_x] + c->npc->dir[dim_x];
     dest[dim_y] = c->pos[dim_y] + c->npc->dir[dim_y];
   }
+
+  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+    battle();
 }
 
 static void move_pc_func(character_t *c, pair_t dest)
@@ -1728,23 +1763,6 @@ void validate_next(pair_t *next, pair_t *current, map_t *m)
   }
 }
 
-void battle()
-{
-  clear();
-  int inBattle = 1;
-  int input = 0;
-  while (inBattle)
-  {
-    mvprintw(0, 0, "BATTLE!!! *intense pokemon music*");
-    input = getch();
-    if (input == 27)
-    {
-      clear();
-      inBattle = 0;
-    }
-  }
-}
-
 void inBuilding()
 {
   clear();
@@ -1837,9 +1855,9 @@ int pc_movement(map_t *m)
     break;
 
     // used to test batttle functionality
-    //  case 27:
-    //    battle();
-    //    break;
+  case 27:
+    battle();
+    break;
   case '>':
     if (world.cur_map->map[world.pc.pos[dim_y]][world.pc.pos[dim_x]] == ter_mart || world.cur_map->map[world.pc.pos[dim_y]][world.pc.pos[dim_x]] == ter_center)
       inBuilding();
@@ -1866,10 +1884,6 @@ int pc_movement(map_t *m)
   // print updated map
   refresh();
   return 1;
-}
-
-void attack()
-{
 }
 
 void game_loop()
