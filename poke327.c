@@ -1726,13 +1726,44 @@ void validate_next(pair_t *next, pair_t *current, map_t *m)
     *next[dim_x] = *current[dim_x];
     *next[dim_y] = *current[dim_y];
   }
-  else
-    mvprintw(0, 0, "valid movement");
+}
+
+void battle()
+{
+  clear();
+  int inBattle = 1;
+  int input = 0;
+  while (inBattle)
+  {
+    mvprintw(0, 0, "BATTLE!!! *intense pokemon music*");
+    input = getch();
+    if (input == 27)
+    {
+      clear();
+      inBattle = 0;
+    }
+  }
+}
+
+void inBuilding()
+{
+  clear();
+  int inside = 1;
+  int input = 0;
+  while (inside)
+  {
+    mvprintw(0, 0, "*calm elevator music*");
+    input = getch();
+    if (input == '<')
+    {
+      clear();
+      inside = 0;
+    }
+  }
 }
 
 int pc_movement(map_t *m)
 {
-
   pair_t next;
   next[dim_x] = world.pc.pos[dim_x];
   next[dim_y] = world.pc.pos[dim_y];
@@ -1793,12 +1824,36 @@ int pc_movement(map_t *m)
     validate_next(&next, &world.pc.pos, m);
     break;
 
+  case 't':
+    clear();
+
+    break;
+
+  case '5':
+  case ' ':
+  case '.':
+    clear();
+    print_map();
+    break;
+
+    // used to test batttle functionality
+    //  case 27:
+    //    battle();
+    //    break;
+  case '>':
+    if (world.cur_map->map[world.pc.pos[dim_y]][world.pc.pos[dim_x]] == ter_mart || world.cur_map->map[world.pc.pos[dim_y]][world.pc.pos[dim_x]] == ter_center)
+      inBuilding();
+
+    else
+      mvprintw(0, 0, "please enter a valid entry");
+
+    break;
+
   case 'q':
     return 0;
 
-  // default throws a THAT'S NOT VALID msg
   default:
-    mvprintw(0, 0, "Please enter a valid input");
+    mvprintw(0, 0, "please enter a valid entry");
     break;
   }
 
@@ -1811,6 +1866,10 @@ int pc_movement(map_t *m)
   // print updated map
   refresh();
   return 1;
+}
+
+void attack()
+{
 }
 
 void game_loop()
