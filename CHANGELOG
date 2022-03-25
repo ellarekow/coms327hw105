@@ -1,0 +1,59 @@
+commit 228dd9eff03affb26efab9c679af796d8f2ed518
+Author: ellarekow <ellarekow@gmail.com>
+Date:   Thu Mar 24 22:11:33 2022 -0500
+
+    finished stuff
+
+commit e6d565ac286a61001f7d43d9ac1d4835bced92d7
+Author: ellarekow <ellarekow@gmail.com>
+Date:   Thu Mar 24 09:47:55 2022 -0500
+
+    Encounters
+
+commit d13f64f18a833785839535f681dcbc9eec41fa84
+Author: ellarekow <ellarekow@gmail.com>
+Date:   Wed Mar 23 20:09:15 2022 -0500
+
+    Building functionality, battle function but no int
+
+commit ff4f83aa7ffdd26e730a8c5377c341c85c562fca
+Author: ellarekow <ellarekow@gmail.com>
+Date:   Wed Mar 23 18:12:24 2022 -0500
+
+    functional movement
+
+commit ffbb58f8c93b09cfed688eb180b5f43e702a8a83
+Author: ellarekow <ellarekow@gmail.com>
+Date:   Wed Mar 23 17:29:24 2022 -0500
+
+    Fixed the pc move to be in the game loop
+
+commit 9ff83163ec55a29d45a2675da0aa8fa7a264ac00
+Author: ellarekow <ellarekow@gmail.com>
+Date:   Wed Mar 23 11:35:15 2022 -0500
+
+    sketching out movement for pc
+
+commit f566a6c3df0c7fe6f7cdbe56b49fc2a83217f913
+Author: ellarekow <ellarekow@gmail.com>
+Date:   Wed Mar 23 11:35:01 2022 -0500
+
+    sketching out logic for moving the PC
+
+commit fd0f21f4424f0f90389d7b14a9605a00556a4954
+Author: ellarekow <ellarekow@gmail.com>
+Date:   Mon Mar 21 10:04:47 2022 -0500
+
+    ncurses test
+
+commit 139c48dfe0f43855875495099aca95f4f6d5dc2a
+Author: ellarekow <ellarekow@gmail.com>
+Date:   Mon Mar 21 09:40:07 2022 -0500
+
+    Init Commit
+
+commit 530675ee1c07674d9e91d2078336987960203981
+Author: Ella Rekow <just.ella2001@gmail.com>
+Date:   Mon Mar 21 09:36:26 2022 -0500
+
+    Initial commit
