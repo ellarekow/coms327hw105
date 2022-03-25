@@ -201,7 +201,7 @@ static void move_hiker_func(character_t *c, pair_t dest)
       dest[dim_x] = c->pos[dim_x] + all_dirs[i & 0x7][dim_x];
       dest[dim_y] = c->pos[dim_y] + all_dirs[i & 0x7][dim_y];
 
-      if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+      if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_y] == dest[dim_y])
         battle();
       else
         min = world.hiker_dist[dest[dim_y]][dest[dim_x]];
@@ -231,7 +231,7 @@ static void move_rival_func(character_t *c, pair_t dest)
     {
       dest[dim_x] = c->pos[dim_x] + all_dirs[i & 0x7][dim_x];
       dest[dim_y] = c->pos[dim_y] + all_dirs[i & 0x7][dim_y];
-      if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+      if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_y] == dest[dim_y])
         battle();
       else
         min = world.hiker_dist[dest[dim_y]][dest[dim_x]];
@@ -263,7 +263,7 @@ static void move_pacer_func(character_t *c, pair_t dest)
     dest[dim_x] = c->pos[dim_x] + c->npc->dir[dim_x];
     dest[dim_y] = c->pos[dim_y] + c->npc->dir[dim_y];
   }
-  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_y] == dest[dim_y])
     battle();
 }
 
@@ -291,7 +291,7 @@ static void move_wanderer_func(character_t *c, pair_t dest)
     dest[dim_y] = c->pos[dim_y] + c->npc->dir[dim_y];
   }
 
-  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_y] == dest[dim_y])
     battle();
 }
 
@@ -300,7 +300,7 @@ static void move_sentry_func(character_t *c, pair_t dest)
   dest[dim_x] = c->pos[dim_x];
   dest[dim_y] = c->pos[dim_y];
 
-  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_y] == dest[dim_y])
     battle();
 }
 
@@ -333,7 +333,7 @@ static void move_walker_func(character_t *c, pair_t dest)
     dest[dim_y] = c->pos[dim_y] + c->npc->dir[dim_y];
   }
 
-  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_x] == dest[dim_x])
+  if (world.pc.pos[dim_x] == dest[dim_x] && world.pc.pos[dim_y] == dest[dim_y])
     battle();
 }
 
@@ -1761,6 +1761,9 @@ void validate_next(pair_t *next, pair_t *current, map_t *m)
     *next[dim_x] = *current[dim_x];
     *next[dim_y] = *current[dim_y];
   }
+
+  // if (world.cur_map->cmap[*next[dim_y]][*next[dim_x]] != NULL)
+  //   battle();
 }
 
 void inBuilding()
@@ -1780,6 +1783,68 @@ void inBuilding()
   }
 }
 
+void trainer_map()
+{
+  // clear the terminal
+  clear();
+  refresh();
+  // var to keep track of how many trainers have been listed
+  int num_printed = 0;
+  int y, x;
+  for (y = 0; y < MAP_Y; y++)
+  {
+    for (x = 0; x < MAP_X; x++)
+    {
+      if (world.cur_map->cmap[y][x] != NULL)
+      {
+        // hold the dist between npc and pc that we just calculated
+        int delta_x, delta_y;
+
+        pair_t pc_location;
+        pc_location[dim_x] = world.pc.pos[dim_x];
+        pc_location[dim_y] = world.pc.pos[dim_y];
+
+        pair_t mob_location;
+        mob_location[dim_x] = x;
+        mob_location[dim_y] = y;
+
+        // finding their dists
+        delta_x = pc_location[dim_x] - mob_location[dim_x];
+        delta_y = pc_location[dim_y] - mob_location[dim_y];
+
+        if (delta_x > 0 && delta_y > 0) // N+W
+        {
+          mvprintw(num_printed, 0, "%c, %d North and %d West", world.cur_map->cmap[y][x]->symbol, abs(delta_y), abs(delta_x));
+          num_printed++;
+        }
+        else if (delta_x > 0 && delta_y < 0) // S+W
+        {
+          mvprintw(num_printed, 0, "%c, %d South and %d West", world.cur_map->cmap[y][x]->symbol, abs(delta_y), abs(delta_x));
+          num_printed++;
+        }
+        else if (delta_x < 0 && delta_y > 0) // N+E
+        {
+          mvprintw(num_printed, 0, "%c, %d North and %d East", world.cur_map->cmap[y][x]->symbol, abs(delta_y), abs(delta_x));
+          num_printed++;
+        }
+        else if (delta_x < 0 && delta_y < 0) // S+E
+        {
+          mvprintw(num_printed, 0, "%c, %d South and %d East", world.cur_map->cmap[y][x]->symbol, abs(delta_y), abs(delta_x));
+          num_printed++;
+        }
+      }
+    }
+  }
+  refresh();
+  char userInput;
+  userInput = getch();
+  if (userInput == 27) // the esc key
+  {
+    clear();
+    refresh();
+  }
+}
+
 int pc_movement(map_t *m)
 {
   pair_t next;
@@ -1796,6 +1861,45 @@ int pc_movement(map_t *m)
     next[dim_x]--;
     next[dim_y]--;
     validate_next(&next, &world.pc.pos, m);
+    // NORTH
+    if (next[dim_y] == 0)
+    {
+      // moves up to northern map
+      world.cur_idx[dim_y]--;
+      // if map to the north hasn't been made yet
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      // map to north already exists
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      // then need to move one space passed the exit
+      next[dim_y] = 19; // and x stays the same
+      world.pc.pos[dim_y] = next[dim_y];
+      world.pc.pos[dim_x] = next[dim_x];
+    }
+    // WEST
+    else if (next[dim_x] == 0)
+    {
+      world.cur_idx[dim_x]--;
+      // if map to the north hasn't been made yet
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      // map to west already exists
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      // then need to move one space passed the exit
+      next[dim_x] = 78;
+      world.pc.pos[dim_x] = next[dim_x];
+      world.pc.pos[dim_y] = next[dim_y];
+    }
+    // otherwise just a normal move on the map
+    else
+    {
+      world.pc.pos[dim_x]--;
+      world.pc.pos[dim_y]--;
+    }
     break;
 
   // 8 || k
@@ -1803,10 +1907,56 @@ int pc_movement(map_t *m)
   case 'k':
     next[dim_y]--;
     validate_next(&next, &world.pc.pos, m);
+    if (next[dim_y] == 0)
+    {
+      // moves up to northern map
+      world.cur_idx[dim_y]--;
+      // if map to the north hasn't been made yet
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      // map to north already exists
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      // then need to move one space passed the exit
+      next[dim_y] = 19; // and x stays the same
+      world.pc.pos[dim_y] = next[dim_y];
+    }
     break;
 
   // 9 || u
   case '9':
+  case 'u':
+    // NORTH
+    if (next[dim_y] == 0)
+    {
+      // moves up to northern map
+      world.cur_idx[dim_y]--;
+      // if map to the north hasn't been made yet
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      // map to north already exists
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      // then need to move one space passed the exit
+      next[dim_y] = 19; // and x stays the same
+      world.pc.pos[dim_x] = next[dim_x];
+      world.pc.pos[dim_y] = next[dim_y];
+    }
+    // EAST
+    else if (next[dim_x] == 79)
+    {
+      world.cur_idx[dim_x]++;
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      next[dim_x] = 1;
+      world.pc.pos[dim_x] = next[dim_x];
+      world.pc.pos[dim_y] = next[dim_y];
+    }
     next[dim_x]++;
     next[dim_y]--;
     validate_next(&next, &world.pc.pos, m);
@@ -1814,37 +1964,129 @@ int pc_movement(map_t *m)
 
   // 6 || L
   case '6':
+  case 'l':
     next[dim_x]++;
+    if (next[dim_x] == 79)
+    {
+      world.cur_idx[dim_x]++;
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      next[dim_x] = 1;
+      world.pc.pos[dim_x] = next[dim_x];
+    }
     validate_next(&next, &world.pc.pos, m);
     break;
 
   // 3 || n
   case '3':
+  case 'n':
     next[dim_x]++;
     next[dim_y]++;
     validate_next(&next, &world.pc.pos, m);
+    if (next[dim_y] == 20)
+    {
+      world.cur_idx[dim_y]++;
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      next[dim_y] = 1;
+      world.pc.pos[dim_x] = next[dim_x];
+      world.pc.pos[dim_y] = next[dim_y];
+    }
+    // EAST
+    else if (next[dim_x] == 79)
+    {
+      world.cur_idx[dim_x]++;
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      next[dim_x] = 1;
+      world.pc.pos[dim_x] = next[dim_x];
+      world.pc.pos[dim_y] = next[dim_y];
+    }
     break;
 
   // 2 || j
   case '2':
+  case 'j':
     next[dim_y]++;
     validate_next(&next, &world.pc.pos, m);
+    if (next[dim_y] == 20)
+    {
+      world.cur_idx[dim_y]++;
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      next[dim_y] = 1;
+      world.pc.pos[dim_y] = next[dim_y];
+    }
     break;
 
   case '1':
+  case 'b':
     next[dim_x]--;
     next[dim_y]++;
     validate_next(&next, &world.pc.pos, m);
+    // SOUTH
+    if (next[dim_y] == 20)
+    {
+      world.cur_idx[dim_y]++;
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      next[dim_y] = 1;
+      world.pc.pos[dim_x] = next[dim_x];
+      world.pc.pos[dim_y] = next[dim_y];
+    }
+    // WEST
+    else if (next[dim_x] == 0)
+    {
+      world.cur_idx[dim_x]--;
+      // if map to the north hasn't been made yet
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      next[dim_x] = 78;
+      world.pc.pos[dim_x] = next[dim_x];
+      world.pc.pos[dim_y] = next[dim_y];
+    }
     break;
 
   case '4':
+  case 'h':
     next[dim_x]--;
     validate_next(&next, &world.pc.pos, m);
+    // HIT WEST EXIT
+    if (next[dim_x] == 0)
+    {
+      world.cur_idx[dim_x]--;
+      // if map to the north hasn't been made yet
+      if (world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]] == NULL)
+      {
+        new_map();
+      }
+      world.cur_map = world.world[world.cur_idx[dim_y]][world.cur_idx[dim_x]];
+      next[dim_x] = 78;
+      world.pc.pos[dim_x] = next[dim_x];
+    }
     break;
 
   case 't':
     clear();
-
+    trainer_map();
     break;
 
   case '5':
